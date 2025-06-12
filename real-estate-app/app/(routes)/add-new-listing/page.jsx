@@ -6,6 +6,7 @@ import { supabase } from '../../../utils/supabase/client';
 import { useUser } from '@clerk/nextjs';
 import { toast } from 'sonner';
 import { Loader } from 'lucide-react';
+
 const GoogleAddressSearch = dynamic(() => import('../../../app/_components/GoogleAddressSearch'), {
     ssr: false,
 });
