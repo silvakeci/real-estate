@@ -5,6 +5,7 @@ import { Button } from '../../../components/ui/button';
 import { supabase } from '../../../utils/supabase/client';
 import { useUser } from '@clerk/nextjs';
 import { toast } from 'sonner';
+import {useRouter} from 'next/navigation'
 import { Loader } from 'lucide-react';
 
 const GoogleAddressSearch = dynamic(() => import('../../../app/_components/GoogleAddressSearch'), {
@@ -15,7 +16,7 @@ function AddNewListing() {
     const [selectedAddress, setSelectedAddress] = useState();
     const [coordinates, setCoordinates] = useState()
     const [loader, setLoader] = useState()
-
+const router =useRouter()
     const {user}= useUser();
     const nextHandler = async () => {
         console.log(selectedAddress, coordinates)
@@ -31,6 +32,7 @@ function AddNewListing() {
                 setLoader(false)
                 console.log('new data added:', data)
                 toast("new address added for listing ")
+                router.replace('/edit-listing/'+data[0].id)
             } if (error){
                 setLoader(false)
                 console.log('Error', error)
@@ -50,7 +52,7 @@ function AddNewListing() {
                         setCoordinates={(value) => { setCoordinates(value) }}
                     />
                     <Button
-                        disable={!selectedAddress || !coordinates || loader}
+                        //  disable={!selectedAddress || !coordinates || loader}
                         onClick={nextHandler}
                     >{loader? <Loader className='animate-spin'/>:"Next"}</Button>
                 </div>

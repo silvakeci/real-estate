@@ -1,45 +1,58 @@
 'use client';
 
-import React, { useEffect } from 'react'
-import { Label } from "../../../../components/ui/label"
-import { RadioGroup, RadioGroupItem } from "../../../../components/ui/radio-group"
+import React, { useEffect, use } from 'react';
+import { Label } from "../../../../components/ui/label";
+import { RadioGroup, RadioGroupItem } from "../../../../components/ui/radio-group";
 import {
     Select,
     SelectContent,
     SelectItem,
     SelectTrigger,
     SelectValue,
-} from "../../../../components/ui/select"
-import { Input } from "../../../../components/ui/input"
-import { Button } from '../../../../components/ui/button'
-import { Formik } from 'formik'
-import { usePathname, useRouter } from 'next/navigation';
+} from "../../../../components/ui/select";
+import { Input } from "../../../../components/ui/input";
+import { Button } from '../../../../components/ui/button';
+import { Formik } from 'formik';
+import { useRouter } from 'next/navigation';
 import { supabase } from '../../../../utils/supabase/client';
 import { toast } from 'sonner';
 import { useUser } from '@clerk/nextjs';
 
-function EditListing({params}) {
-    const { user } = useUser()
+function EditListing({ params }) {
+    const unwrappedParams = use(params); 
+    const { user } = useUser();
     const router = useRouter();
 
     const verifyUserRecord = async () => {
-        const { data, error } = await supabase.from('listing').select('*').eq('created_by', user?.primaryEmailAddress.emailAddress).eq('id', params.id);
+        const { data, error } = await supabase
+            .from('listing')
+            .select('*')
+            .eq('created_by', user?.primaryEmailAddress.emailAddress)
+            .eq('id', unwrappedParams.id);
+
         if (data?.length <= 0) {
-            router.replace('/')
+            router.replace('/');
         }
-    }
+    };
 
     useEffect(() => {
-        user && verifyUserRecord()
-    }, [user])
+        if (user) {
+            verifyUserRecord();
+        }
+    }, [user]);
 
     const onSubmitHandler = async (formValue) => {
-        const { data, error } = await supabase.from('listing').update(formValue).eq('id', params.id).select();
+        const { data, error } = await supabase
+            .from('listing')
+            .update(formValue)
+            .eq('id', unwrappedParams.id)
+            .select();
+
         if (data) {
-            console.log(data)
-            toast('Listing updated and Published')
+            console.log(data);
+            toast('Listing updated and Published');
         }
-    }
+    };
 
     return (
         <div className='px-10 md:px-20'>
@@ -50,8 +63,8 @@ function EditListing({params}) {
                     propertyType: ''
                 }}
                 onSubmit={(values) => {
-                    console.log(values)
-                    onSubmitHandler(values)
+                    console.log(values);
+                    onSubmitHandler(values);
                 }}
             >
                 {({
@@ -82,13 +95,12 @@ function EditListing({params}) {
                                             <SelectValue placeholder="Select Property Type" />
                                         </SelectTrigger>
                                         <SelectContent>
-                                            <SelectItem value="Single Family Hous">Single Family House</SelectItem>
+                                            <SelectItem value="Single Family House">Single Family House</SelectItem>
                                             <SelectItem value="Town House">Town House</SelectItem>
                                             <SelectItem value="Condo">Condo</SelectItem>
                                         </SelectContent>
                                     </Select>
                                 </div>
-
                             </div>
                             <div className='grid grid-cols-1 md:grid-cols-3 gap-3 mt-5'>
                                 <div className='flex gap-2 flex-col'>
@@ -113,7 +125,7 @@ function EditListing({params}) {
                                 </div>
                                 <div className='flex gap-2 flex-col'>
                                     <h2 className='text-gray-500'>Area</h2>
-                                    <Input placeholder='Ex.2' name='area' />
+                                    <Input placeholder='Ex.2' name='area' onChange={handleChange} />
                                 </div>
                                 <div className='flex gap-2 flex-col'>
                                     <h2 className='text-gray-500'>Selling Price</h2>
@@ -124,23 +136,22 @@ function EditListing({params}) {
                                     <Input placeholder='Ex.2' name='hoa' onChange={handleChange} />
                                 </div>
                             </div>
-                            <div className='grid grid-cols-1 gap-10'>
+                            <div className='grid grid-cols-1 gap-10 mt-5'>
                                 <div className='flex gap-2 flex-col'>
                                     <h2 className='text-gray-500'>Descriptions</h2>
                                     <Input placeholder='' name='description' onChange={handleChange} />
                                 </div>
                             </div>
                             <div className='flex justify-end mt-3 gap-3'>
-                                <Button variant='outline' className="border-purple-500 text-purple-500" >Save</Button>
-                                <Button>Save & Publish</Button>
-
+                                <Button variant='outline' className="border-purple-500 text-purple-500">Save</Button>
+                                <Button type="submit">Save & Publish</Button>
                             </div>
-
                         </div>
-                    </form>)}
+                    </form>
+                )}
             </Formik>
         </div>
-    )
+    );
 }
 
-export default EditListing
+export default EditListing;
