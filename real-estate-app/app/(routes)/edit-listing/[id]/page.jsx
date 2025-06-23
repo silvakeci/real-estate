@@ -22,6 +22,7 @@ function EditListing({ params }) {
     const unwrappedParams = use(params); 
     const { user } = useUser();
     const router = useRouter();
+    const [listing, setListing] =useState([]);
 
     const verifyUserRecord = async () => {
         const { data, error } = await supabase
@@ -30,6 +31,9 @@ function EditListing({ params }) {
             .eq('created_by', user?.primaryEmailAddress.emailAddress)
             .eq('id', unwrappedParams.id);
 
+        if(data){
+            setListing(data[0])
+        }    
         if (data?.length <= 0) {
             router.replace('/');
         }
@@ -105,41 +109,41 @@ function EditListing({ params }) {
                             <div className='grid grid-cols-1 md:grid-cols-3 gap-3 mt-5'>
                                 <div className='flex gap-2 flex-col'>
                                     <h2 className='text-gray-500'>Bedroom</h2>
-                                    <Input type='number' placeholder='Ex.2' name='bedroom' onChange={handleChange} />
+                                    <Input type='number' placeholder='Ex.2' name='bedroom' onChange={handleChange} defaultValue={listing?.bedroom}/>
                                 </div>
                                 <div className='flex gap-2 flex-col'>
                                     <h2 className='text-gray-500'>Bathroom</h2>
-                                    <Input type='number' placeholder='Ex.2' name='bathroom' onChange={handleChange} />
+                                    <Input type='number' placeholder='Ex.2' name='bathroom' onChange={handleChange} defaultValue={listing?.bathroom} />
                                 </div>
                                 <div className='flex gap-2 flex-col'>
                                     <h2 className='text-gray-500'>Built In</h2>
-                                    <Input type='number' placeholder='Ex.2' name='buildIn' onChange={handleChange} />
+                                    <Input type='number' placeholder='Ex.2' name='buildIn' onChange={handleChange} defaultValue={listing?.buildIn}/>
                                 </div>
                                 <div className='flex gap-2 flex-col'>
                                     <h2 className='text-gray-500'>Parking</h2>
-                                    <Input placeholder='Ex.2' name='parking' onChange={handleChange} />
+                                    <Input placeholder='Ex.2' name='parking' onChange={handleChange} defaultValue={listing?.parking} />
                                 </div>
                                 <div className='flex gap-2 flex-col'>
                                     <h2 className='text-gray-500'>Lot Size </h2>
-                                    <Input placeholder='Ex.2' name="lotSize" onChange={handleChange} />
+                                    <Input placeholder='Ex.2' name="lotSize" onChange={handleChange} defaultValue={listing?.lotSize}/>
                                 </div>
                                 <div className='flex gap-2 flex-col'>
                                     <h2 className='text-gray-500'>Area</h2>
-                                    <Input placeholder='Ex.2' name='area' onChange={handleChange} />
+                                    <Input placeholder='Ex.2' name='area' onChange={handleChange} defaultValue={listing?.area}/>
                                 </div>
                                 <div className='flex gap-2 flex-col'>
                                     <h2 className='text-gray-500'>Selling Price</h2>
-                                    <Input placeholder='Ex.2' name='price' onChange={handleChange} />
+                                    <Input placeholder='Ex.2' name='price' onChange={handleChange} defaultValue={listing?.price} />
                                 </div>
                                 <div className='flex gap-2 flex-col'>
                                     <h2 className='text-gray-500'>HOA</h2>
-                                    <Input placeholder='Ex.2' name='hoa' onChange={handleChange} />
+                                    <Input placeholder='Ex.2' name='hoa' onChange={handleChange} defaultValue={listing?.hoa} />
                                 </div>
                             </div>
                             <div className='grid grid-cols-1 gap-10 mt-5'>
                                 <div className='flex gap-2 flex-col'>
                                     <h2 className='text-gray-500'>Descriptions</h2>
-                                    <Input placeholder='' name='description' onChange={handleChange} />
+                                    <Input placeholder='' name='description' onChange={handleChange} defaultValue={listing?.description} />
                                 </div>
                             </div>
                             <div className='flex justify-end mt-3 gap-3'>

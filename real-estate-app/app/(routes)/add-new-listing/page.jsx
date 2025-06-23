@@ -27,7 +27,6 @@ const router =useRouter()
                 { address: selectedAddress, coordinates: coordinates, created_by:user?.primaryEmailAddress.emailAddress },
             ])
             .select()
-
             if(data) {
                 setLoader(false)
                 console.log('new data added:', data)
